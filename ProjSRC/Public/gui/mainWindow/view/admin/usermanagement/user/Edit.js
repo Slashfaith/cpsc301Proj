@@ -1,40 +1,47 @@
-
+/*
+	View for User editor
+ */
 Ext.define('GUI.view.admin.usermanagement.user.Edit', {
     extend: 'Ext.window.Window',
     alias: 'widget.useredit',
-
+	id: 'useredit',
+	/* Layout */
     title: 'Edit User',
     layout: 'fit',
     autoShow: true,
 
-    initComponent: function(){
+    initComponent: function(){//List of Items
         this.items = [
-            {
+            {	/* Textfields */
                 xtype: 'form',
 				defaultType:  'textfield',
                 items: [
                     {
-						xtype: 'numberfield',
-                        name:   'id',
-                        fieldLabel: 'ID',
-						minValue: 0,
-						decimalPrecision: 0
-						
-                    },
-                    {
                         name: 'name',
-                        fieldLabel: 'Name'
+                        fieldLabel: 'Name',
+						allowBlank: false,
+						enforceMaxLength: true,
+                        emptyText: 'User name',
+						maxLength: 50
                     },
                     {
                         name: 'email',
-                        fieldLabel: 'Email'
+                        fieldLabel: 'Email',
+						allowBlank: false,
+						enforceMaxLength: true,
+                        emptyText: 'Email address',
+						maxLength: 50
                     },
                     {
                         name: 'password',
                         fieldLabel: 'Password',
-						inputType: 'password'
+						inputType: 'password',
+						id: 'passwordField',
+						allowBlank: false,
+						enforceMaxLength: true,
+						maxLength: 50
                     },
-					{
+					{//check box
 						xtype: 'checkbox',
 						boxLabel: 'Make Administrator',
 						name: 'admin',
@@ -43,30 +50,35 @@ Ext.define('GUI.view.admin.usermanagement.user.Edit', {
                     },
                     {
                         xtype: 'textareafield',
-                        grow: true,
                         name: 'description',
                         fieldLabel: 'User Description',
-                        autoScroll: true
+                        autoScroll: true,
+						enforceMaxLength: true,
+                        resizable: true,
+                        emptyText: 'Brief User Description ',
+						maxLength: 500
                     }
 
-                ]
+                ],
+				/* Buttons */
+				buttons: [
+					{
+						text: 'Save',
+						formBind: true,
+						action: 'save',
+                        tooltip: 'Click me - Save Changes'
+					},
+					{
+						text: 'Cancel',
+						scope: this,
+						handler: this.close,
+						action: 'cancel',
+                        tooltip: 'Click me - Cancel Changes!'
+					}
+				]
 
             }
         ];
-
-
-        this.buttons = [
-            {
-                text: 'Save',
-                action: 'save'
-            },
-            {
-                text: 'Cancel',
-                scope: this,
-                handler: this.close
-            }
-        ];
-
         this.callParent(arguments);
     }
 });

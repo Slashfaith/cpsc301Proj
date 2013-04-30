@@ -1,20 +1,20 @@
-
+/*
+	View for user list
+ */
 Ext.define('GUI.view.admin.usermanagement.user.List', {
     extend: 'Ext.grid.Panel',
     alias:  'widget.userlist',
     title: 'Calgary Emergency Medicine - User Manager',
     store: 'Users',
     id: 'userlist',
-    //xtype: 'userlist_gridpanel',
+	/* Layout */
     anchor: '100%',
     collapsible: true,
     collapseDirection: 'top',
-    initComponent: function() {
-        this.columns = [
-            {header: 'ID', dataIndex: 'id', flex: 1},
+    initComponent: function() {//List of Items
+        this.columns = [// definitions for columns
             {header: 'Name', dataIndex: 'name', flex: 1},
             {header: 'Email', dataIndex: 'email', flex: 1},
-            //{header: 'Password', dataIndex: 'password', flex: 1},
 			{
 				xtype: 'booleancolumn', 
 				text: 'Admin',
@@ -25,6 +25,7 @@ Ext.define('GUI.view.admin.usermanagement.user.List', {
             {header: 'Desc', dataIndex: 'description', flex: 1}
         ];
         this.dockedItems = [{
+			/* Add and remove user buttons */
             xtype: 'toolbar',
             dock: 'bottom',
             layout: {

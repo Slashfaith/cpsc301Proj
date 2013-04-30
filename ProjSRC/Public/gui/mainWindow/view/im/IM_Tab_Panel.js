@@ -1,7 +1,10 @@
+/*
+	IM view definitions
+ */
 Ext.define('GUI.view.im.IM_Tab_Panel', {
     extend: 'Ext.tab.Panel',
     alias: 'widget.impanel',
-	
+	/* Layout */
     width: 280,
     activeTab: 0,
     title: 'Instant Messaging',
@@ -11,27 +14,27 @@ Ext.define('GUI.view.im.IM_Tab_Panel', {
 
         Ext.applyIf(me, {
             items: [
-                {
+                {	/* Recent Panel */
                     xtype: 'panel',
                     title: 'Recent',
                     items: [
-                        {
+                        {	/* Message receiver form */
                             xtype: 'form',
                             height: '95%',
                             title: 'Recent messages',
-							items : [
+							dockedItems : [
 								{
 									xtype: 'textareafield',
-									width: 280,
+									width: '100%',
 									id: 'mssgForm',
 									readOnly: true,
-									height: '100%'
+									height: '99%'
 									
 								}
 							]
 							
                         },
-						{
+						{	/* Message sender form */
 							xtype: 'toolbar',
 							height: '5%',
 							items: [
@@ -39,34 +42,35 @@ Ext.define('GUI.view.im.IM_Tab_Panel', {
 									xtype: 'textfield',
 									id: 'mssgField',
 									width: 230,
-									enterIsSpecial: true,
+									enterIsSpecial: true, //enter key to trigger event
 									emptyText: 'Enter Message'
 								},'->',
 								{
 									text: 'Send',
-									action: 'send'
+									action: 'send',
+                                    tooltip: 'Click me - Send message'
 								}
 							]
 						}  
                     ]
                 },
-                {
+                {	/* Last day message panel */
                     xtype: 'panel',
-                    title: 'Last day',
+                    title: 'Yesterday',
 					name: 'lastdaypanel',
-
+                    tooltip: 'Yesterday chatting history',
                     items: [
                         {
                             xtype: 'form',
                             height: '100%',
                             title: 'Messages from the last day',
-							items : [
-								{
+							dockedItems : [
+								{	/* message field */
 									xtype: 'textareafield',
-									width: 280,
+									width: '100%',
 									id: 'mssgFormLastDay',
 									readOnly: true,
-									height: '100%'
+									height: '99%'
 								}
 							]
                         }

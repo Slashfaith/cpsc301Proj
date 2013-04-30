@@ -1,42 +1,47 @@
+/*
+	View for memo viewing panel
+ */
+
 Ext.define('GUI.view.memoview.MemoviewPanel',{
     extend: 'Ext.panel.Panel',
     alias: 'widget.memoviewpanel',
-    width: '30%',
+	/* Layout */
+    width: 200,
     autoScroll: true,
-
     title: 'Memo Title',
-
-    initComponent: function() {
-        Ext.apply(this, {
+	
+    initComponent: function() {//List of Items
+        Ext.applyIf(this, {
             items: [
                 this.memoTitleView()
             ]
         });
 		
-        this.memoTitleList();
         this.addEvents(
             'memotitleselect'
         )
         this.callParent(arguments);
     },
-
+	/* Definition for memo title view */
     memoTitleView: function(){
         var memoTitleView = this.view = Ext.create('Ext.view.View', {
             store: 'Memoview',
             selectedMemoTitle: null,
             selModel: {
                 mode: 'SINGLE',
+
                 listeners: {
                     scope: this,
                     selectionchange: this.onSelectChange
                 }
+
             },
 
             listeners: {
                 scope: this,
-                //contextmenu: this.onContextMenu,
                 viewReady: this.onViewReady,
 				itemclick: this.checkTabs
+
             },
             trackOver: true,
             cls: 'feed-list',
@@ -48,29 +53,13 @@ Ext.define('GUI.view.memoview.MemoviewPanel',{
         return this.view;
     },
 
-    memoTitleList: function(){
-        this.titlelist = Ext.create('widget.menu', {
-            items: [{
-                scope: this,
-                handler: this.onLoadClick,
-                text: 'Load Memo'
-            }],
-            listeners: {
-                hide: function(c){
-                    c.activeMemoTitle = null;
-                }
-            }
-        })
-    },
-
     onViewReady: function(){
         this.view.getSelectionModel().select(this.view.store.first());
     },
-
     getSelectedItem: function(){
         return this.view.getSelectionModel().getSelection()[0] || null;
     },
-
+	/* change displaying memo as a user changes selection */
     onSelectChange: function(){
         var selected = this.getSelectedItem();
         var displaypanel = Ext.getCmp('memodisplaypanel');
@@ -101,18 +90,30 @@ Ext.define('GUI.view.memoview.MemoviewPanel',{
     
     contentRender: function(record){
         var renderedStr = '<div class="topic"><h5> title: {0} </h5>' +
-            '<div><p>{1}</p></div> <div><span class="author">author: {2} </span></div> </div>';
-        return Ext.String.format(renderedStr,record.get('title'), record.get('content'), record.get('author'));
+            '<div><br><p>{1}</p></br></div></div> <div><h5>Author: {2} ; '+
+            'Date created: {3} </h5></div></div>';
+        return Ext.String.format(renderedStr,record.get('title'), record.get('content'), record.get('author'), record.get('date_created'));
     },
 	
 	checkTabs: function()
 	{
-		
+		var selectedItem = this.getSelectedItem();
+
+        if (selectedItem == null) return; // if the selected item is null, do nothing
+
 		var displaypanel = Ext.getCmp('memodisplaypanel');
 		var currentTabid = displaypanel.getActiveTab().id;
 		if (this.getSelectedItem().get('_id').toString().trim() != currentTabid){
 			var memopanel = Ext.getCmp(this.getSelectedItem().get('_id').toString().trim());
-			displaypanel.setActiveTab(memopanel);
+			if(memopanel){
+				displaypanel.setActiveTab(memopanel);
+			}else{
+				this.onSelectChange();
+			}
 		}	
-	}
+	},
+
+    onDestroy: function(){
+        this.callParent(arguments);
+    }
 })

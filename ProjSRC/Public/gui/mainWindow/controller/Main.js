@@ -1,28 +1,31 @@
-/**
- * Created by JetBrains WebStorm.
- * User: Brennan Jones
- * Date: 23/03/12
- * Time: 6:37 PM
- * To change this template use File | Settings | File Templates.
+/*
+	Main Panel Controller
  */
 
 Ext.define('GUI.controller.Main', {
     extend: 'Ext.app.Controller',
 
-    views: [
-        'mainpanel.MainPanel'
-    ],
+    views: ['mainpanel.MainPanel'],
 
     init: function() { 
-		this.control({
+		this.control({//List of Actions
             'panel button[action=logout]':{
 				click: this.logout
+			},
+			'panel[name=memopanel]':{
+				activate: this.loadMemo
+			},
+			'panel[name=adminpanel]':{
+				activate: this.loadAdmin
+			},
+			'panel[name=discussionpanel]':{
+				activate: this.loadDiscussion
 			}
         });
 	},
 	
 	logout: function(){
-		//console.log("Logged out");
+		/* Send logout request */
 		Ext.Ajax.request({
 			url: '/logout',
 			success: function (){
@@ -33,5 +36,16 @@ Ext.define('GUI.controller.Main', {
 				Ext.MessageBox.alert('Error', "Failed to log out");
 			}
 		});
-    }
+    },
+	/* Load memo list */
+	loadMemo: function(){
+		Ext.getStore('Memoview').load();
+	},
+	
+	loadAdmin: function(){
+		Ext.getStore('Users').load();
+	},
+	loadDiscussion: function(){
+		Ext.getStore('Discussions').load();
+	}
 });

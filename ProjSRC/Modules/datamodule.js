@@ -1,6 +1,11 @@
+/*
+	Objects for each kind of records
+	Function name must be the same as collection name.
+ */
+
+ /* User Record */
 exports.user = function (){
     return {
-        id: null,
         name: null,
         password: null,
         email: null,
@@ -8,7 +13,7 @@ exports.user = function (){
         description: null
     }
 };
-
+/* Memo Record */
 exports.memo = function(){
     return {
         title: null,
@@ -18,24 +23,15 @@ exports.memo = function(){
         author: null
     }
 };
-
+/* Discussion Record*/
 exports.discussion = function(){
     return {
         title: null,
-        thread: [{
-            thread_id: null,
-            body: null,
-            comments: [{
-                comment_id: null,
-                body: null,
-                self_regulating: null
-            }]
-        }],
-        comments: null,
+        topic: null,
+        body: null,
+        comments: [],
         author: null,
         date_created: null,
         date_modified: null
     }
 };
-
-

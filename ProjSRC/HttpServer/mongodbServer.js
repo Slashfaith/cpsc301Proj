@@ -1,13 +1,25 @@
 /*
 	database related action handler
  */
-
+var crypto = require('crypto');
 var datamodule = require('../Modules/datamodule.js')
 var Database = require('../Modules/database.js').Database;
 var mongodbObj = new Database('cem_db', 'localhost', 27017, function(err){
     console.log("Database connection error : " + err);
 });
 
+/* this is a function to encrypt password*/
+var pwdEncrypt = function(pwdStr) {
+    if (pwdStr == 'passwordisnotmodifid') {
+        return pwdStr;
+    }
+
+    var shasum = crypto.createHash('sha1');
+    shasum.update(pwdStr);
+    return shasum.digest('hex');
+}
+
+/*return all docs from the specified collection*/
 exports.findAll = function(collectionName, request, response){
     mongodbObj.findAll(collectionName, function(err, data){
         response.contentType('json');
@@ -20,6 +32,7 @@ exports.findAll = function(collectionName, request, response){
     });
 };
 
+/* to find document object with the document id which is returned from database*/
 exports.findById = function(collectionName, request, response){
     mongodbObj.findById(collectionName, request.body['_id'], function(err, data){
         response.contentType('json');
@@ -32,14 +45,19 @@ exports.findById = function(collectionName, request, response){
             })
         }
     })
-}
+};
 
+/* To update document object which belongs to the specified collection */
 exports.update = function(collectionName, request, response){
-    var userDoc_update = new datamodule.user();
-    for(var k in userDoc_update) {
-        userDoc_update[k] = request.body[k]
+    var doc_update = new datamodule[collectionName];
+    for(var k in doc_update) {
+        doc_update[k] = request.body[k]
     }
-    mongodbObj.update(collectionName, request.body['_id'], userDoc_update, function(err, data){
+
+	if(request.body['password']=="passwordisnotmodified")
+		delete doc_update['password'];
+		
+    mongodbObj.update(collectionName, request.body['_id'], doc_update, function(err, data){
         if (err) {
             console.log("error from Updating data!!")
             console.log(err)
@@ -52,8 +70,8 @@ exports.update = function(collectionName, request, response){
 
 };
 
+/* Intsert new document into the specified collection with pass-in collectionName*/
 exports.insert = function(collectionName, request, response){
-
     if(request.body['_id'] == ''){
         var doc_new = new datamodule[collectionName];
         for(var k in doc_new) {
@@ -86,6 +104,8 @@ exports.insert = function(collectionName, request, response){
     }
 };
 
+
+/* Remove a record specified with object ID */
 exports.remove = function(collectionName, request, response){
     mongodbObj.remove(collectionName, request.body['_id'], function(err, data){
         if (err) {
@@ -99,7 +119,6 @@ exports.remove = function(collectionName, request, response){
     })
 };
 
-
 /* Login request handler */
 exports.userLogin = function(collectionName,request,response){
 
@@ -107,9 +126,13 @@ exports.userLogin = function(collectionName,request,response){
 
 	mongodbObj.findOne(collectionName,loginQuery, function(err, docs){
 		response.contentType('json');
+
+        var passHash = pwdEncrypt(request.body['password']);
+		
+		response.contentType('json');
 		if (err){//Database Error
 			console.log(err);
-		}else if(docs==null || request.body['password']!==docs.password){
+		}else if(docs==null || passHash!==docs.password){
 			/* if no such ID, or pasword does not match */
 			response.json({
 				failure: true
@@ -252,7 +275,7 @@ exports.IMSave = function(collectionName, request, response){
 							console.log(err);
 						} else {
 							response.json({
-								success: true,
+								success: true
 							})
 						}
 					});
@@ -260,3 +283,5 @@ exports.IMSave = function(collectionName, request, response){
         }
     })
 };
+
+exports.pwdEncrypt = pwdEncrypt;

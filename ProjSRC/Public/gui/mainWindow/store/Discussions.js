@@ -1,61 +1,28 @@
-/**
- * Created by JetBrains WebStorm.
- * User: Brennan Jones
- * Date: 28/03/12
- * Time: 9:07 PM
- * To change this template use File | Settings | File Templates.
+/*
+	store definition for discussions
  */
-
 Ext.define('GUI.store.Discussions', {
-    extend: 'Ext.data.TreeStore',
-    /*
+    extend: 'Ext.data.Store',
     autoLoad: true,
-    autosync: true,
-
+	id: 'discussionStore',
+    sorters: [
+        {
+            property: 'date_created',
+            direction: 'DESC'
+        }
+    ],
+    groupField: 'topic',
+	/* Data Address */
     proxy: {
         type: 'rest',
-        url: '/discussions',
-        model: 'GUI.model.Discussions',
+        url : '/discussion',
+        model : 'GUI.model.Discussion',
+
         reader: {
             type: 'json',
             root: 'data',
             successProperty: 'success'
-        }
+        },
+        simpleSortMode: true
     }
-    */
-
-    root: {
-        expanded: true,
-        children: [
-            {
-                text: 'Resident Duties',
-                expanded: false,
-                children: [
-                    {
-                        text: 'End of day procedure',
-                        leaf: true
-                    },
-                    {
-                        text: 'Responsibilities',
-                        leaf: true
-                    }
-                ]
-            },
-            {
-                text: 'Dental',
-                expanded: false,
-                children: [
-                    {
-                        text: 'Oral surgery',
-                        leaf: true
-                    }
-                ]
-            }
-        ]
-    },
-    folderSort: true,
-    sorters: [{
-        property: 'text',
-        direction: 'ASC'
-    }]
 });

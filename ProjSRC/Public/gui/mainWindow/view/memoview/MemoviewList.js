@@ -1,12 +1,13 @@
-
+/*
+	View for memo list
+ */
 
 Ext.define('GUI.view.memoview.MemoviewList',{
     extend: 'Ext.tab.Panel',
     alias: 'widget.memoviewlist',
     id: 'memodisplaypanel',
-    width: '70%',
     autoScroll: true,
-    initComponent: function(){
+    initComponent: function(){//List of Items
         this.items = [
             {
                 xtype: 'panel',
@@ -17,7 +18,7 @@ Ext.define('GUI.view.memoview.MemoviewList',{
                         layout: 'fit',
                         cls: 'feed-grid',
                         store: 'Memoview',
-                        columns: [
+                        columns: [//List of columns in the list
                             {
                                 id: 'memotitle',
                                 text: 'Title',
@@ -76,7 +77,5 @@ Ext.define('GUI.view.memoview.MemoviewList',{
         var renderStr = '<div class="topic"><b>{0}</b></div>';
         return Ext.String.format(renderStr, value, record.get('author'));
     }
-
-
 
 })
